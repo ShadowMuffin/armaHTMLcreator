@@ -5,15 +5,12 @@ class Scraper:
 
     def __init__(self, page=""):
         self.page = page
-        self.__soup = None
+        self.soup = self.create_bs()
         self.links = {}
-        self.create_bs()
-
-
 
 
     def create_bs(self):
-        self.soup = BeautifulSoup(requests.get(self.page).content, "html.parser")
+        return BeautifulSoup(requests.get(self.page).content, "html.parser")
 
     def extract_modlist(self):
         tags = self.soup.find("div", id="RequiredItems").find_all('a')
@@ -23,12 +20,7 @@ class Scraper:
         for tag in tags:
             self.links[tag.text.strip()] = tag["href"]
 
+    def extract_mission_name(self):
+        return self.soup.find("div", "workshopItemTitle").text.strip()
 
 
-
-def main():
-    scraper = Scraper(r"https://steamcommunity.com/sharedfiles/filedetails/?id=2139200035&searchtext=")
-    scraper.create_links(scraper.extract_modlist())
-    print(scraper.links)
-
-main()
