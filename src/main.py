@@ -8,13 +8,14 @@ def main():
     page = input("Input page > ")
     scrap = scraper.Scraper(page)
     builder = html_builder.HtmlBuilder(scrap.extract_mission_name())
+    builder.initialize_file()
 
-    links = scrap.create_links(scrap.extract_modlist())
+    scrap.create_links(scrap.extract_modlist())
+    links = scrap.links
+    for mod_name in links:
+        builder.write_line(mod_name, links[mod_name])
 
-    for link in links:
-        builder.write_line(link, links[link])
-
-    html_builder.finish()
+    builder.finish()
 
 main()
 
